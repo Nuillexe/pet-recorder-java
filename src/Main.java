@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 class Pet{
@@ -71,14 +72,10 @@ public class Main {
 
             System.out.print("Race: ");
             petList[i].setRace(recorderRace(scanner));
+
             System.out.println("Now, enter the pet's birthdate ");
-            System.out.print("Day: ");
-            petList[i].setDay(scanner.nextInt());
-            System.out.print("Month: ");
-            petList[i].setMonth(scanner.nextInt());
-            System.out.print("Year: ");
-            petList[i].setYear(scanner.nextInt());
-            scanner.nextLine();//Fixing the nextInt's bug
+            recorderPetBirthdate(petList[i],scanner);
+            scanner.nextLine();//Fixing the scanner.nextInt's bug
             System.out.println();
         }
         printPetList(petList);
@@ -92,6 +89,47 @@ public class Main {
             System.out.println("This race is invalid. Insert other");
             return recorderRace(scanner);
         }
+    }
+
+    static void recorderPetBirthdate(Pet pet,Scanner scanner){
+        try {
+            System.out.print("Day: ");
+            pet.setDay(scanner.nextInt());
+
+            System.out.print("Month: ");
+            pet.setMonth(scanner.nextInt());
+
+            System.out.print("Year: ");
+            pet.setYear(scanner.nextInt());
+
+        }catch(InputMismatchException e){
+            System.out.println("Is a invalid date. Enter again");
+            scanner.nextLine();//Fixing the scanner.nextInt's bug
+            recorderPetBirthdate(pet,scanner);
+        }
+
+        if(!(isValidDate(pet.getDay(), pet.getMonth(), pet.getYear()))){
+            System.out.println("Is a invalid date. Enter again");
+            recorderPetBirthdate(pet,scanner);
+        }
+    }
+
+    static boolean isValidDate(int day, int month, int year){
+
+        return isValidDateInMonthWith30Days(day, month) || isValidDateInMonthWith31Days(day, month)
+                ||isValidDateInFebruary(day, month, year);
+    }
+
+    static boolean isValidDateInMonthWith30Days(int day, int month){
+        return (month==4 || month==6 || month==9 || month==11) &&(day<31);
+    }
+
+    static boolean isValidDateInMonthWith31Days(int day, int month){
+        return(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12)&&(day<32);
+    }
+
+    static boolean isValidDateInFebruary(int day, int month, int year){
+        return ((day<29 && (year%4)!=0) || (day<30 && (year%4)==0))&&(month==2);
     }
 
     static boolean isValidRace(String race){
