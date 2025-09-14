@@ -79,6 +79,7 @@ public class Main {
             System.out.println();
         }
         printPetList(petList);
+        scanner.close();
     }
 
     static String recorderRace(Scanner scanner){
